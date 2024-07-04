@@ -43,7 +43,7 @@ csvStream.pipe(createWriteStream("result.csv"));
 let notesCount = 0;
 for (let page = 1; ; ) {
 	const { data } = await fetchNoteApi(
-		`v3/hashtags/${hashtag}/notes?order=popular&page=${page}&paid_only=false`,
+		`v3/hashtags/${hashtag}/notes?order=new&page=${page}&paid_only=false`,
 	);
 	notesCount += data.notes.length;
 	console.log(`Page: ${page} (${notesCount} / ${data.count} notes)`);
