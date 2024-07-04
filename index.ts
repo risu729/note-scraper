@@ -22,14 +22,6 @@ const formatDateTime = (dateTime: string) => {
 	});
 };
 
-const splitTextByCharCount = (text: string, count: number) => {
-	const result: string[] = [];
-	for (let i = 0; i < text.length; i += count) {
-		result.push(text.slice(i, i + count));
-	}
-	return result;
-};
-
 const {
 	values: { hashtag },
 } = parseArgs({
@@ -102,6 +94,23 @@ for (let page = 1; ; ) {
 			console.error(`${message} (${data.key})`);
 		}
 
+		// split body into multiple cells if it exceeds the max char count
+		const maxCharCount = 32767;
+		const splitBody: string[] = [];
+		for (let i = 0; i < body.length; i += maxCharCount) {
+			splitBody.push(body.slice(i, i + maxCharCount));
+		}
+		// fast-csv omits properties not defined in the headers so we need to fix the number of cells
+		const maxCells = 5;
+		for (let i = splitBody.length; i < maxCells; i++) {
+			splitBody.push("");
+		}
+		if (splitBody.length > 5) {
+			const message = `Body exceeds max char count (${maxCharCount * maxCells}): ${body.length}`;
+			remarks.push(message);
+			console.error(`${message} (${data.key})`);
+		}
+
 		const result = {
 			title: data.name,
 			createdAt: formatDateTime(data.created_at),
@@ -125,11 +134,7 @@ for (let page = 1; ; ) {
 				.join(", "),
 			remarks: remarks.join(", "),
 			...Object.fromEntries(
-				splitTextByCharCount(
-					body,
-					// max char count for a cell in Excel
-					32767,
-				).map((text, index) => [`body${index + 1}`, text]),
+				splitBody.map((body, index) => [`body${index + 1}`, body]),
 			),
 		};
 
