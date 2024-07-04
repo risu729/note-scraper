@@ -1,0 +1,17 @@
+{
+	"name": "note-scraper",
+	"type": "module",
+	"scripts": {
+		"scrape": "bun index.ts"
+	},
+	"dependencies": {
+		"@fast-csv/format": "^5.0.0",
+		"@types/bun": "^1.1.6",
+		"@types/html-to-text": "^9.0.4",
+		"@types/luxon": "^3.4.2",
+		"html-to-text": "^9.0.5",
+		"luxon": "^3.4.4",
+		"typescript": "^5.5.3",
+		"unicode-escapes": "^1.0.0"
+	}
+}
